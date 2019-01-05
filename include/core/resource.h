@@ -22,6 +22,7 @@ namespace twilight {
         typedef std::map<std::string, FontCacheEntry>   TextContainer;
 
         void           init(std::string base);
+        std::string    getBase() { return base; }
 
         S2D_Sprite*    getSprite(std::string sprite);
         S2D_Image*     getImage(std::string image);

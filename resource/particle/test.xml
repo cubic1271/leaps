@@ -1,0 +1,9 @@
+<ParticleSystem persistent="true">
+    <Emission>5.0</Emission>
+    <Direction>
+        <X>0.0</X>
+        <Y>1.0</Y>
+    </Direction>
+    <Speed>3.0</Speed>
+    <Radius>0.2</Radius>
+</ParticleSystem>
