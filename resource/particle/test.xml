@@ -1,9 +1,14 @@
 <ParticleSystem persistent="true">
-    <Emission>5.0</Emission>
+    <Emission>0.14</Emission>
+    <Lifetime>4.0</Lifetime>
     <Direction>
         <X>0.0</X>
         <Y>1.0</Y>
     </Direction>
-    <Speed>3.0</Speed>
+    <Angle>10.0</Angle>
+    <Speed>80.0</Speed>
     <Radius>0.2</Radius>
+    <Sprites>
+        <Sprite>sprite_test.png</Sprite>
+    </Sprites>
 </ParticleSystem>

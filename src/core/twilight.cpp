@@ -16,13 +16,15 @@ using twilight::StateManager;
 using twilight::ResourceManager;
 using twilight::AnimationManager;
 using twilight::ParticleManager;
+using twilight::ParticleSystem;
 using twilight::ConfigManager;
 
 static twilight::Timer _timer;
 static double _accumulator;
 
 static void _render() {
-
+    ParticleManager* particle = ParticleManager::instance();
+    particle->render();
 }
 
 static void _update() {
@@ -48,6 +50,11 @@ int main(int argc, char* argv[]) {
     int height = config->getSettingAsInteger("ScreenHeight");
     printf("Building window of size: %d x %d\n", width, height);
     printf("Fullscreen: %d\n", config->getSettingAsInteger("FullScreen"));
+    ParticleManager* particles = ParticleManager::instance();
+    ParticleSystem* system = particles->loadParticleSystem("test");
+    system->setLocation(twilight::vec2(640, 360));
+    system->setDirection(twilight::vec2(0.4, -0.8));
+    system->setAcceleration(twilight::vec2(0.0, 40.0));
     int flags = (config->getSettingAsBoolean("FullScreen") ? S2D_FULLSCREEN : 0);
     S2D_Window* window = S2D_CreateWindow("TwilightEngine v0.25", width, height, _update, _render, flags);
     S2D_Show(window);

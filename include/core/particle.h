@@ -46,7 +46,14 @@ namespace twilight {
             return sqrt(x * x + y * y);
         }
 
-        const vec2 normalize() {
+        vec2 rotate(double beta) {
+            return {
+                    cos(beta) * x - sin(beta) * y,
+                    sin(beta) * x + cos(beta) * y
+            };
+        }
+
+        vec2 normalize() {
             double val = sqrt((x * x) + (y * y));
             return {x / val, y / val};
         }
@@ -120,13 +127,16 @@ namespace twilight {
         void          setSpeed(double speed) { this->speed = speed; }
         void          setRadius(double radius) { this->radius = radius; }
         void          setState(int state) { this->state = state; }
+        void          setName(std::string name) { this->name = name; }
+        void          setAcceleration(vec2 acceleration) { this->acceleration = acceleration; }
 
         void          update(double dt);
         void          render();
 
         ParticleSystem()
-                : state(PARTICLE_SYSTEM_STOPPED), emission(0), clock{ }, location{0, 0}, lifetime(0), persistent(false),
-                  direction{0.0, -1.0}, speed(0), radius(5), acceleration{ }, graphics{ }, particles{ } {  }
+                : state(PARTICLE_SYSTEM_STOPPED), emission(0), clock{ }, location{0, 0}, lifetime(0), systemLifetime(0),
+                  persistent(false), direction{0.0, -1.0}, angle(0), speed(0), radius(5), acceleration{ }, graphics{ },
+                  particles{ } {  }
 
     private:
         // Properties of the particle system itself
@@ -135,12 +145,15 @@ namespace twilight {
         twilight::Timer               clock{};
         vec2                       location;
         double                     lifetime;
+        double               systemLifetime;
         bool                     persistent;
         // Properties of the particles being emitted
         vec2                      direction;
+        double                        angle;
         double                        speed;
         vec2                   acceleration;
         double                       radius;
+        std::string                    name;
 
         std::vector<S2D_Sprite*>   graphics{};
         std::vector<Particle>      particles{};
@@ -151,9 +164,9 @@ namespace twilight {
     class ParticleManager {
     public:
         typedef std::vector<ParticleSystem*> ParticleSystemContainer;
+        typedef std::map<std::string, ParticleSystem*> ParticleSystemCache;
         static ParticleManager*  instance();
 
-        ParticleSystem*          createParticleSystem();
         ParticleSystem*          loadParticleSystem(std::string name);
         void                     update(double dt);
         void                     render();
@@ -161,6 +174,7 @@ namespace twilight {
 
     private:
         ParticleSystemContainer system;
+        ParticleSystemCache cache;
     };
 }
 
