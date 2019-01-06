@@ -8,4 +8,3 @@ to me (read: I wrote them, so they should).
 
 The intent is to support Windows, OS/X, and Linux ... with possible (eventual) support for e.g. Emscripten
 as well.
-

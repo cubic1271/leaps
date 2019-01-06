@@ -132,11 +132,12 @@ namespace twilight {
 
         void          update(double dt);
         void          render();
+        bool          complete() { return clock.total() > systemLifetime && particles.empty(); }
 
         ParticleSystem()
                 : state(PARTICLE_SYSTEM_STOPPED), emission(0), clock{ }, location{0, 0}, lifetime(0), systemLifetime(0),
-                  persistent(false), direction{0.0, -1.0}, angle(0), speed(0), radius(5), acceleration{ }, graphics{ },
-                  particles{ } {  }
+                  persistent(false), direction{0.0, -1.0}, angle(0), speed(0), radius(5), rangeMin(1), rangeMax(1),
+                  acceleration{ }, graphics{ }, particles{ } {  }
 
     private:
         // Properties of the particle system itself
@@ -151,8 +152,10 @@ namespace twilight {
         vec2                      direction;
         double                        angle;
         double                        speed;
-        vec2                   acceleration;
         double                       radius;
+        vec2                   acceleration;
+        uint32_t                   rangeMin;
+        uint32_t                   rangeMax;
         std::string                    name;
 
         std::vector<S2D_Sprite*>   graphics{};

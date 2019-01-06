@@ -1,12 +1,15 @@
-<ParticleSystem persistent="true">
+<ParticleSystem>
     <Emission>0.14</Emission>
-    <Lifetime>4.0</Lifetime>
+    <RangeMin>40</RangeMin>
+    <RangeMax>120</RangeMax>
+    <Lifetime>3.0</Lifetime>
+    <SystemLifetime>10.0</SystemLifetime>
     <Direction>
         <X>0.0</X>
         <Y>1.0</Y>
     </Direction>
-    <Angle>10.0</Angle>
-    <Speed>80.0</Speed>
+    <Angle>360.0</Angle>
+    <Speed>160.0</Speed>
     <Radius>0.2</Radius>
     <Sprites>
         <Sprite>sprite_test.png</Sprite>

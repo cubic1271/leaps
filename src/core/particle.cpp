@@ -7,8 +7,12 @@
 
 static twilight::ParticleManager* _manager = nullptr;
 
+static double _random() {
+    return (rand() / double(RAND_MAX));
+}
+
 static double _random_shift() {
-    return (rand() / double(RAND_MAX)) - 0.5;
+    return _random() - 0.5;
 }
 
 static double _d2r(double d) {
@@ -30,18 +34,22 @@ void twilight::ParticleSystem::render() {
 }
 
 void twilight::ParticleSystem::update(double dt) {
-    if(clock.elapsed() > emission) {
-        vec2 target = direction.normalize().rotate(_random_shift() * _d2r(angle));
-        Particle tmp;
-        tmp.lifetime = lifetime;
-        tmp.position.x = location.x;
-        tmp.position.y = location.y;
-        tmp.velocity.x = speed * target.x;
-        tmp.velocity.y = speed * target.y;
-        tmp.acceleration.x = acceleration.x;
-        tmp.acceleration.y = acceleration.y;
-        tmp.graphic = graphics[rand() % graphics.size()];
-        particles.push_back(tmp);
+    if(clock.total() < systemLifetime && clock.elapsed() > emission) {
+        int count = rangeMin;
+        count += int(round((rangeMax - rangeMin) * _random()));
+        for(int i = 0; i < count; ++i) {
+            vec2 target = direction.normalize().rotate(_random_shift() * _d2r(angle));
+            Particle tmp;
+            tmp.lifetime = lifetime;
+            tmp.position.x = location.x;
+            tmp.position.y = location.y;
+            tmp.velocity.x = speed * target.x;
+            tmp.velocity.y = speed * target.y;
+            tmp.acceleration.x = acceleration.x;
+            tmp.acceleration.y = acceleration.y;
+            tmp.graphic = graphics[rand() % graphics.size()];
+            particles.push_back(tmp);
+        }
         clock.update();
     }
 
@@ -67,6 +75,17 @@ void twilight::ParticleManager::update(double dt) {
     for(auto iter : system) {
         iter->update(dt);
     }
+
+    for(auto iter = system.begin(); iter != system.end(); ) {
+        if((*iter)->complete()) {
+            printf("Particle system has completed - cleaning up ...\n");
+            iter = system.erase(iter);
+            continue;
+        }
+        else {
+            ++iter;
+        }
+    }
 }
 
 void twilight::ParticleManager::clear() {
@@ -88,6 +107,9 @@ twilight::ParticleSystem* twilight::ParticleManager::loadParticleSystem(std::str
         system->systemLifetime = basis->systemLifetime;
         system->persistent = basis->persistent;
         system->name = basis->name;
+        system->rangeMin = basis->rangeMin;
+        system->rangeMax = basis->rangeMax;
+
         for(auto graphic : basis->graphics) {
             system->graphics.push_back(graphic);
         }
@@ -98,7 +120,7 @@ twilight::ParticleSystem* twilight::ParticleManager::loadParticleSystem(std::str
         return system;
     }
 
-    printf("Loading new particle system: %s (%d)\n", name.c_str(), (int)cache.size());
+    printf("Loading new particle system: %s (%d) / %f seconds\n", name.c_str(), (int)cache.size());
     // if we haven't loaded this before, try to do so and then call this method again.
     pugi::xml_document document;
     ResourceManager* manager = ResourceManager::instance();
@@ -115,6 +137,8 @@ twilight::ParticleSystem* twilight::ParticleManager::loadParticleSystem(std::str
     auto system = new ParticleSystem;
     system->name = name;
     system->persistent = systemNode.attribute("persistent").as_bool(false);
+    system->rangeMin = uint32_t(atoi(systemNode.child("RangeMin").child_value()));
+    system->rangeMax = uint32_t(atoi(systemNode.child("RangeMax").child_value()));
     system->emission = atof(systemNode.child("Emission").child_value());
     system->angle = atof(systemNode.child("Angle").child_value());
     double dir_x = atof(systemNode.child("Direction").child("X").child_value());
