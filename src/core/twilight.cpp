@@ -60,4 +60,3 @@ int main(int argc, char* argv[]) {
     S2D_Show(window);
     return 0;
 }
- 

@@ -1,5 +1,9 @@
 #include "core/util.h"
 
+#include <cstdarg>
+#include <cstdio>
+#include <climits>
+
 double twilight::Timer::total() {
     return ((std::chrono::duration_cast<std::chrono::microseconds>(_clock.now().time_since_epoch()) - _start).count()) / 1000000.0;
 }

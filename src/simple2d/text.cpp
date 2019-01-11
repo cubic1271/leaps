@@ -3,6 +3,7 @@
 #include "simple2d/simple2d.h"
 #include <cstring>
 #include <cstdio>
+#include "core/vasprintf.h"
 
 /*
  * Create text, given a font file path, the message, and size

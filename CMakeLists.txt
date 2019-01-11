@@ -28,7 +28,7 @@ set(SOURCE_FILES
         src/simple2d/simple2d.cpp
         src/simple2d/sprite.cpp
         src/simple2d/window.cpp
-        include/core/util.h src/core/state.cpp src/core/util.cpp src/pugixml/pugixml.cpp include/pugixml/pugiconfig.hpp src/core/config.cpp)
+        include/core/util.h src/core/state.cpp src/core/util.cpp src/pugixml/pugixml.cpp include/pugixml/pugiconfig.hpp src/core/config.cpp include/core/vasprintf.h src/core/vasprintf.cpp)
 
 set(BOX_SOURCE_FILES
         src/Box2D/collision/b2BroadPhase.cpp

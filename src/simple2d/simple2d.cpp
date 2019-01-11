@@ -2,6 +2,7 @@
 
 #include "simple2d/simple2d.h"
 #include <cstdio>
+#include "core/vasprintf.h"
 
 // Initalize S2D shared data
 bool S2D_diagnostics = false;
