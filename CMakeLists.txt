@@ -1,19 +1,18 @@
 cmake_minimum_required(VERSION 3.8)
-project(twilight)
+project(leaps)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set(SOURCE_FILES
-        include/core/twilight.h
-        include/core/state.h
-        include/core/animation.h
-        include/core/resource.h
-        include/core/tinydir.h
-        src/core/twilight.cpp
+set(APP_SOURCE_FILES
+        src/leaps/state/title.cpp
+        src/leaps/state/init.cpp
+)
+
+set(CORE_SOURCE_FILES
+        src/core/leaps.cpp
         src/core/animation.cpp
         src/core/resource.cpp
 
-        include/simple2d/simple2d.h
         src/simple2d/controllers.cpp
         src/simple2d/gl2.cpp
         src/simple2d/gles.cpp
@@ -28,7 +27,22 @@ set(SOURCE_FILES
         src/simple2d/simple2d.cpp
         src/simple2d/sprite.cpp
         src/simple2d/window.cpp
-        include/core/util.h src/core/state.cpp src/core/util.cpp src/pugixml/pugixml.cpp include/pugixml/pugiconfig.hpp src/core/config.cpp include/core/vasprintf.h src/core/vasprintf.cpp)
+        include/core/util.h 
+        src/core/state.cpp 
+        src/core/util.cpp 
+        src/pugixml/pugixml.cpp 
+        src/core/config.cpp 
+        src/core/vasprintf.cpp
+        
+        include/core/twilight.h
+        include/core/state.h
+        include/core/animation.h
+        include/core/resource.h
+        include/core/tinydir.h
+        include/simple2d/simple2d.h
+        include/core/vasprintf.h 
+        include/pugixml/pugiconfig.hpp
+        )
 
 set(BOX_SOURCE_FILES
         src/Box2D/collision/b2BroadPhase.cpp
@@ -81,17 +95,17 @@ set(BOX_SOURCE_FILES
 
 link_directories(lib/link)
 add_definitions(-DGLEW_STATIC)
-add_executable(twilight ${SOURCE_FILES} ${BOX_SOURCE_FILES})
+add_executable(leaps ${APP_SOURCE_FILES} ${CORE_SOURCE_FILES} ${BOX_SOURCE_FILES})
 
-add_custom_command(TARGET twilight POST_BUILD
+add_custom_command(TARGET leaps POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${PROJECT_SOURCE_DIR}/lib/dist"
-        $<TARGET_FILE_DIR:twilight>)
+        $<TARGET_FILE_DIR:leaps>)
 
-add_custom_command(TARGET twilight POST_BUILD
+add_custom_command(TARGET leaps POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${PROJECT_SOURCE_DIR}/resource"
-        "$<TARGET_FILE_DIR:twilight>/resource")
+        "$<TARGET_FILE_DIR:leaps>/resource")
 
-target_include_directories(twilight PUBLIC lib/include include)
-target_link_libraries(twilight SDL2 SDL2_ttf SDL2_mixer SDL2_image glew32 opengl32)
+target_include_directories(leaps PUBLIC lib/include include)
+target_link_libraries(leaps SDL2 SDL2_ttf SDL2_mixer SDL2_image glew32 opengl32)

@@ -1,8 +1,15 @@
 #include "core/state.h"
 #include "core/twilight.h"
+#include <cassert>
 
 static twilight::StateManager* _manager = nullptr;
 static twilight::StateEntry* _entry = nullptr;
+
+twilight::StateManager::StateManager() {
+    current = nullptr;
+    next = nullptr;
+    transition_timer = 0.0;
+}
 
 twilight::StateManager *twilight::StateManager::instance() {
     if(nullptr == _manager) {
@@ -13,11 +20,21 @@ twilight::StateManager *twilight::StateManager::instance() {
 }
 
 void twilight::StateManager::inputKey(S2D_Event *event) {
-
+    if(current) {
+        current->inputKey(event);
+    }
 }
 
 void twilight::StateManager::inputMouse(S2D_Event *event) {
+    if(current) {
+        current->inputMouse(event);
+    }
+}
 
+void twilight::StateManager::inputController(S2D_Event *event) {
+    if(current) {
+        current->inputController(event);
+    }
 }
 
 int twilight::StateManager::addState(twilight::StateEntry *entry) {
@@ -25,6 +42,7 @@ int twilight::StateManager::addState(twilight::StateEntry *entry) {
         return twilight::TWILIGHT_OK;
     }
 
+    assert(entry->init() == twilight::TWILIGHT_OK);
     state[entry->name()] = entry;
     return twilight::TWILIGHT_OK;
 }
@@ -44,7 +62,7 @@ twilight::StateEntry *twilight::StateManager::getState(std::string name) {
 int twilight::StateManager::startTransition(twilight::StateEntry *next) {
     this->next = next;
     if(current == nullptr) {
-        current = next;
+        completeTransition();
     }
     else {
         current->requestExit();
