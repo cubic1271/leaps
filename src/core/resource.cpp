@@ -106,3 +106,15 @@ S2D_Text *twilight::ResourceManager::getText(std::string font, int size) {
         }
     }
 }
+
+pugi::xml_document*  getXml(std::string path) {
+    pugi::xml_document* document = new pugi::xml_document;
+    pugi::xml_parse_result result = document->load_file(path.c_str());
+    if(result.status != pugi::status_ok) {
+        printf("Warning: failed to load resource file: %s\n", result.description());
+        delete document;
+        return nullptr;
+    }
+
+    return document;
+}

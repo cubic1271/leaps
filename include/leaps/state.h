@@ -27,6 +27,10 @@ class LeapsTitle : public StateEntry {
         void inputMouse(S2D_Event* event);
         void inputController(S2D_Event* event);
     protected:
+        // Box2D callbacks.
+        void BeginContact(b2Contact* contact);
+        void EndContact(b2Contact* contact);
+
         S2D_Music* bgm;
 };
 

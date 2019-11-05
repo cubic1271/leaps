@@ -28,7 +28,7 @@ int LeapsTitle::init() {
 }
 
 void LeapsTitle::update(double dt) {
-
+    
 }
 
 void LeapsTitle::render() {
@@ -45,6 +45,14 @@ void LeapsTitle::inputMouse(S2D_Event* event) {
 
 void LeapsTitle::inputController(S2D_Event* event) {
 
+}
+
+void LeapsTitle::BeginContact(b2Contact* contact) {
+
+}
+
+void LeapsTitle::EndContact(b2Contact* contact) {
+    
 }
 
 }

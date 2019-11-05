@@ -3,6 +3,7 @@
 
 #include <map>
 #include <simple2d/simple2d.h>
+#include "pugixml/pugixml.hpp"
 
 namespace twilight {
     struct FontCacheEntry {
@@ -29,6 +30,8 @@ namespace twilight {
         S2D_Music*     getMusic(std::string music);
         S2D_Sound*     getSound(std::string sound);
         S2D_Text*      getText(std::string font, int size);
+
+        pugi::xml_document*  getXml(std::string path);
 
         static ResourceManager* instance();
 

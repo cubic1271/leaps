@@ -1,14 +1,18 @@
 #ifndef TWILIGHTENGINE_STATE_H
 #define TWILIGHTENGINE_STATE_H
 
+#include "Box2D/Box2D.h"
 #include "simple2d/simple2d.h"
+#include "core/twilight.h"
 #include <string>
 #include <map>
 
-namespace twilight {
-    class StateEntry {
-    public:
+#define TWILIGHT_TICK_DEFAULT  (TWILIGHT_UPDATE_DELTA)  // 100 Hz
 
+namespace twilight {
+    class StateEntry : public b2ContactListener {
+    public:
+        StateEntry();
         virtual std::string name() = 0;
 
         virtual void enter() = 0;
@@ -21,6 +25,18 @@ namespace twilight {
         virtual void inputKey(S2D_Event* event) = 0;
         virtual void inputMouse(S2D_Event* event) = 0;
         virtual void inputController(S2D_Event* event) = 0;
+
+        void         updateDelta(double dt, double tick);
+        void         setPhysics(bool status) {
+            updatePhysics = status;
+        }
+        void         initPhysics();
+
+    protected:
+
+        double      dt_accum;
+        b2World*    phyWorld;
+        bool        updatePhysics;
     };
 
     class StateManager {
@@ -41,11 +57,44 @@ namespace twilight {
         StateEntry* getState(std::string name);
         StateEntry* getCurrentState();
 
+        void update(double dt);
+
+        void setTick(double t) {
+            this->tick = t;
+        }
+
+        double getTick() {
+            return this->tick;
+        }
+
     private:
         StateContainer  state;
         StateEntry*     current;
         StateEntry*     next;
         double          transition_timer;
+        double          tick;
+    };
+
+    class WorldProjection {
+    public:
+        static WorldProjection* instance();
+
+        WorldProjection();
+        void set(b2Vec2 res, b2Vec2 phys);
+
+        b2Vec2 screenToWorld(b2Vec2 screen) {
+            return b2Vec2(screen.x * invScale.x, screen.y * invScale.y);
+        }
+
+        b2Vec2 worldToScreen(b2Vec2 world) {
+            return b2Vec2(world.x * scale.x, world.y * scale.y);
+        }
+
+    private:
+        b2Vec2 resolution;
+        b2Vec2 phySize;
+        b2Vec2 scale;
+        b2Vec2 invScale;
     };
 }
 

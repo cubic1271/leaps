@@ -15,14 +15,7 @@
 #define TWILIGHT_APP_VERSION        "v0.01"
 #define TWILIGHT_TITLE_BUFSZ        (2048)
 
-using twilight::Timer;
-using twilight::StateEntry;
-using twilight::StateManager;
-using twilight::ResourceManager;
-using twilight::AnimationManager;
-using twilight::ParticleManager;
-using twilight::ParticleSystem;
-using twilight::ConfigManager;
+using namespace twilight;
 
 static twilight::Timer _timer;
 static double _accumulator;
@@ -71,11 +64,15 @@ int main(int argc, char* argv[]) {
     assert(config != nullptr);
     int width = config->getSettingAsInteger("ScreenWidth");
     int height = config->getSettingAsInteger("ScreenHeight");
+    double physWidth = config->getSettingAsFloat("WorldSizeX");
+    double physHeight = config->getSettingAsFloat("WorldSizeY");
     printf("Building window of size: %d x %d\n", width, height);
     printf("Fullscreen: %d\n", config->getSettingAsInteger("FullScreen"));
     int flags = (config->getSettingAsBoolean("FullScreen") ? S2D_FULLSCREEN : 0);
-    twilight::LeapsStateInit();
+    LeapsStateInit();
     StateManager* state = StateManager::instance();
+    WorldProjection* projection = WorldProjection::instance();
+    projection->set(b2Vec2(width, height), b2Vec2(physWidth, physHeight));
 
     snprintf(tbuf, TWILIGHT_TITLE_BUFSZ, "LEAPS / %s / %s", TWILIGHT_APP_VERSION, __DATE__);
     S2D_Window* window = S2D_CreateWindow(tbuf, width, height, _update, _render, flags);

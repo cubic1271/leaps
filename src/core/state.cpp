@@ -2,13 +2,63 @@
 #include "core/twilight.h"
 #include <cassert>
 
+#define TWILIGHT_B2_VELOCITY_ITER  (8)
+#define TWILIGHT_B2_POSITION_ITER  (1)
+
 static twilight::StateManager* _manager = nullptr;
-static twilight::StateEntry* _entry = nullptr;
+static twilight::WorldProjection* _projection = nullptr;
+
+twilight::WorldProjection::WorldProjection() {
+    resolution = b2Vec2(0.0, 0.0);
+    phySize = b2Vec2(0.0, 0.0);
+    scale = b2Vec2(0.0, 0.0);
+    invScale = b2Vec2(0.0, 0.0);
+}
+
+twilight::WorldProjection* twilight::WorldProjection::instance() {
+    if(!_projection) {
+        _projection = new WorldProjection;
+    }
+
+    return _projection;
+}
+
+void twilight::WorldProjection::set(b2Vec2 res, b2Vec2 phys) {
+    assert(res.x > 0.01 && res.y > 0.01);
+    resolution = res;
+    phySize = phys;
+    scale = b2Vec2(res.x / phys.x, res.y / phys.y);
+    invScale = b2Vec2(1/scale.x, 1/scale.y);
+}
+
+twilight::StateEntry::StateEntry() 
+    : dt_accum(0.0), phyWorld(nullptr), updatePhysics(true) { 
+
+}
+
+void twilight::StateEntry::initPhysics() {
+    phyWorld = new b2World(b2Vec2(0.0, TWILIGHT_GRAVITY_BASE));
+    phyWorld->SetAllowSleeping(true);
+    phyWorld->SetContinuousPhysics(true);
+    phyWorld->SetContactListener(this);
+}
+
+void twilight::StateEntry::updateDelta(const double dt, const double tick) {
+    dt_accum += dt;
+    while(dt_accum > tick) {
+        dt_accum -= tick;
+        this->update(tick);
+        if(updatePhysics && phyWorld) {
+            phyWorld->Step(tick, TWILIGHT_B2_VELOCITY_ITER, TWILIGHT_B2_POSITION_ITER);
+        }
+    }
+}
 
 twilight::StateManager::StateManager() {
     current = nullptr;
     next = nullptr;
     transition_timer = 0.0;
+    tick = TWILIGHT_TICK_DEFAULT;
 }
 
 twilight::StateManager *twilight::StateManager::instance() {
@@ -34,6 +84,12 @@ void twilight::StateManager::inputMouse(S2D_Event *event) {
 void twilight::StateManager::inputController(S2D_Event *event) {
     if(current) {
         current->inputController(event);
+    }
+}
+
+void twilight::StateManager::update(double dt) {
+    if(current) {
+        current->updateDelta(dt, getTick());
     }
 }
 

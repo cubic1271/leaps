@@ -1,5 +1,8 @@
 <SystemConfig>
     <ScreenWidth>1280</ScreenWidth>
     <ScreenHeight>720</ScreenHeight>
+    <!-- Make sure WorldSizeX / WorldSizeY are 16:9 -->
+    <WorldSizeX>48</WorldSizeX>
+    <WorldSizeY>27</WorldSizeY>
     <FullScreen>false</FullScreen>
 </SystemConfig>
