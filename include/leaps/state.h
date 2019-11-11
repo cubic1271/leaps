@@ -1,7 +1,9 @@
 #ifndef _LEAPS_STATE_H
 #define _LEAPS_STATE_H
 
+#include "leaps/level.h"
 #include "core/state.h"
+#include "leaps/actor.h"
 
 namespace twilight {
 
@@ -31,7 +33,9 @@ class LeapsTitle : public StateEntry {
         void BeginContact(b2Contact* contact);
         void EndContact(b2Contact* contact);
 
+        Level*     level;
         S2D_Music* bgm;
+        Actor*     player;
 };
 
 }

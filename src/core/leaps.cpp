@@ -19,13 +19,25 @@ using namespace twilight;
 
 static twilight::Timer _timer;
 static double _accumulator;
+static bool _isFirstUpdate = true;
 
 static void _render() {
     ParticleManager* particle = ParticleManager::instance();
     particle->render();
+    StateManager* state = StateManager::instance();
+    StateEntry* curr = state->getCurrentState();
+    if(curr) {
+        curr->render();
+    }
 }
 
 static void _update() {
+    // Start the simulation on the first update after something has been shown ...
+    if(_isFirstUpdate) {
+        _timer.update();
+        _isFirstUpdate = false;
+    }
+
     ParticleManager* particle = ParticleManager::instance();
     StateManager* state = StateManager::instance();
 
@@ -35,6 +47,8 @@ static void _update() {
         particle->update(dt);
         _accumulator -= TWILIGHT_UPDATE_DELTA;
     }
+
+    state->update(dt);
     _timer.update();
 }
 
@@ -83,6 +97,7 @@ int main(int argc, char* argv[]) {
     StateEntry* start = state->getState(LEAPS_TITLE_NAME);
     assert(nullptr != start);
     state->startTransition(start);
+    _timer.update();
     S2D_Show(window);
     delete[] tbuf;
     return 0;
