@@ -31,6 +31,11 @@ void twilight::WorldProjection::set(b2Vec2 res, b2Vec2 phys) {
     invScale = b2Vec2(1/scale.x, 1/scale.y);
 }
 
+void twilight::WorldProjection::updateCamera(b2Vec2 center) {
+    offset.x = center.x - phySize.x / 2.0;
+    offset.y = center.y - phySize.y / 2.0;
+}
+
 twilight::StateEntry::StateEntry() 
     : dt_accum(0.0), phyWorld(nullptr), updatePhysics(true) { 
 

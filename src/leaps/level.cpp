@@ -5,29 +5,9 @@
 
 static twilight::LevelManager* _manager = nullptr;
 
-void twilight::WorldGrid::init(double w, double h, double res) {
-    printf("Generating world: %f x %f, steps of %f\n");
-    width = w;
-    height = h;
-    resolution = res;
-
-    cols = w / res;
-    rows = h / res;
-    grid = new int[cols * rows];
-}
-
-int  twilight::WorldGrid::at(int64_t x, int64_t y) {
-    return grid[y * cols + x];
-}
-
-int  twilight::WorldGrid::world(double x, double y) {
-    int64_t col = x / resolution;
-    int64_t row = y / resolution;
-    return grid[row * cols + col];
-}
-
-void twilight::Level::init(pugi::xml_document* level) {
+void twilight::Level::init(pugi::xml_document* level, b2World* world) {
     xml = level;
+    this->world = world;
 
     ResourceManager* resource = ResourceManager::instance();
     pugi::xml_node base = xml->child("Level");
@@ -73,6 +53,17 @@ void twilight::Level::init(pugi::xml_document* level) {
         worldImage.push_back(curr);
     }
 
+    for(auto wall : base.children("Wall")) {
+        Wall curr;
+        curr.type = curr.getTypeValue(wall.child("Type").text().as_string());
+        curr.center.x = wall.child("Center").child("X").text().as_double();
+        curr.center.y = wall.child("Center").child("Y").text().as_double();
+        curr.dimension.x = wall.child("Width").text().as_double();
+        curr.dimension.y = wall.child("Height").text().as_double();
+        this->wall.push_back(curr);
+        curr.constructWall(this->world);
+    }
+
     printf("[level] loaded `%s`\n", title.c_str());
 }
 
@@ -84,7 +75,7 @@ twilight::LevelManager* twilight::LevelManager::instance() {
     return _manager;
 }
 
-twilight::Level* twilight::LevelManager::load(std::string level) {
+twilight::Level* twilight::LevelManager::load(std::string level, b2World* world) {
     ResourceManager* resource = ResourceManager::instance();
     pugi::xml_document* document = resource->getXml(std::string("level/" + level).c_str());
     if(!document) {
@@ -92,7 +83,7 @@ twilight::Level* twilight::LevelManager::load(std::string level) {
         return nullptr;
     }
     Level* target = new Level();
-    target->init(document);
+    target->init(document, world);
     return target;
 }
 
@@ -105,4 +96,36 @@ void twilight::Level::render() {
 
         S2D_DrawText(entry.text);
     }
+
+    for(auto entry : wall) {
+        b2Vec2 topLeft = proj->worldToScreen(b2Vec2(entry.center.x - entry.dimension.x / 2.0, entry.center.y - entry.dimension.y / 2.0));
+        b2Vec2 bottomRight = proj->worldToScreen(b2Vec2(entry.center.x + entry.dimension.x / 2.0, entry.center.y + entry.dimension.y / 2.0));
+        S2D_DrawQuad(
+            topLeft.x, topLeft.y, 0.8, 0.0, 0.0, 1.0,
+            bottomRight.x, topLeft.y, 1.0, 0.0, 0.0, 1.0,
+            bottomRight.x, bottomRight.y, 0.8, 0.0, 0.0, 1.0,
+            topLeft.x, bottomRight.y, 1.0, 0.0, 0.0, 1.0);
+    }
+}
+
+twilight::Wall::WallType twilight::Wall::getTypeValue(std::string type) {
+    if(type == "outline") {
+        return WALL_OUTLINE;
+    }
+    return WALL_UNKNOWN;
+}
+
+void twilight::Wall::constructWall(b2World* world) {
+    b2BodyDef wall;
+    wall.position = b2Vec2(center.x, center.y);
+    wall.type = b2_staticBody;
+    wall.userData = this;
+    b2Body* tBody = world->CreateBody(&wall);
+    b2FixtureDef tFix;
+    b2PolygonShape* rect = new b2PolygonShape;
+    rect->SetAsBox(dimension.x / 2.0, dimension.y / 2.0);
+    tFix.shape = rect;
+    tFix.friction = 0.6f;
+    tFix.restitution = 0.2f;
+    tBody->CreateFixture(&tFix);    
 }

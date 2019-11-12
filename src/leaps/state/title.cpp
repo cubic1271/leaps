@@ -1,6 +1,7 @@
 #include "core/twilight.h"
 #include "core/resource.h"
 #include "leaps/state.h"
+#include "leaps/player.h"
 
 namespace twilight {
 
@@ -24,16 +25,18 @@ int LeapsTitle::init() {
         printf("[state] unable to load bgm: %s\n", LEAPS_TITLE_BGM);
         return twilight::TWILIGHT_ERROR;
     }
+    initPhysics();
     level = nullptr;
-    level = levels->load("title.xml");
+    level = levels->load("title.xml", phyWorld);
     if(nullptr == level) {
         printf("[state] failed to load level data: %s", "title.xml");
         return twilight::TWILIGHT_ERROR;
     }
-    initPhysics();
-    player = new Actor();
+    player = new Player();
     player->setWorld(phyWorld);
     player->setPhysics();
+
+/*
     b2BodyDef bottomWall;
     bottomWall.position = b2Vec2(0, 25);
     bottomWall.type = b2_staticBody;
@@ -46,11 +49,15 @@ int LeapsTitle::init() {
     tFix.friction = 0.6f;
     tFix.restitution = 0.2f;
     tBody->CreateFixture(&tFix);
+*/
 
     return twilight::TWILIGHT_OK;
 }
 
-void LeapsTitle::update(double dt) { }
+void LeapsTitle::update(double dt) { 
+    WorldProjection* proj = WorldProjection::instance();
+    proj->updateCamera(player->getWorldLocation());
+}
 
 void LeapsTitle::render() {
     player->render();
@@ -62,7 +69,7 @@ void LeapsTitle::inputKey(S2D_Event* event) {
 }
 
 void LeapsTitle::inputMouse(S2D_Event* event) {
-    
+
 }
 
 void LeapsTitle::inputController(S2D_Event* event) {

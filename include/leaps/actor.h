@@ -9,12 +9,11 @@ namespace twilight {
     public:
         Actor();
         void          setWorld(b2World* target);
-        virtual void  setPhysics();
-
-
-        virtual void  render();
-        virtual void  inputKey(S2D_Event* event);
-        virtual void  inputController(S2D_Event* event);
+        b2Vec2        getWorldLocation();
+        virtual void  setPhysics() = 0;
+        virtual void  render() = 0;
+        virtual void  inputKey(S2D_Event* event) = 0;
+        virtual void  inputController(S2D_Event* event) = 0;
 
     protected:
         b2World*     world;

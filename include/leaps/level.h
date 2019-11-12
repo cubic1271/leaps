@@ -23,11 +23,26 @@ namespace twilight {
         bool         screenCoord;
     };
 
+    struct Wall {
+        enum WallType {
+            WALL_OUTLINE = 0,
+            WALL_UNKNOWN
+        };
+
+        WallType     type;
+        b2Vec2       center;
+        b2Vec2       dimension;
+
+        WallType     getTypeValue(std::string type);
+        void         constructWall(b2World* world);
+    };
+
     class Level {
     public:
         typedef std::vector<WorldLabel>  LabelContainer;
         typedef std::vector<WorldImage>  ImageContainer;
-        void init(pugi::xml_document* level);
+        typedef std::vector<Wall>        WallContainer;
+        void init(pugi::xml_document* level, b2World* world);
         void render();
 
     protected:
@@ -36,30 +51,18 @@ namespace twilight {
         b2Vec2               start;
         LabelContainer       worldLabel;
         ImageContainer       worldImage;
+        WallContainer        wall;
+        b2World*             world;
     };
 
     class LevelManager {
     public:        
         static LevelManager* instance();
 
-        Level* load(std::string level);
+        Level* load(std::string level, b2World* world);
 
     };
 
-    class WorldGrid {
-    public:
-        void    init(double w, double h, double res);
-        int     world(double x, double y);
-        int     at(int64_t x, int64_t y);
-
-    protected:
-        double   height;
-        double   width;
-        double   resolution;
-        int64_t  cols;
-        int64_t  rows;
-        int*     grid;
-    };
 }
 
 #endif

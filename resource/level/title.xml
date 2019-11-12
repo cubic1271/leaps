@@ -2,7 +2,7 @@
     <Title>Tutorial</Title>
     <StartLocation>
         <X>5.0</X>
-        <Y>20.0</Y>
+        <Y>5.0</Y>
     </StartLocation>
     <WorldLabel>
         <Text>Welcome to LEAPS!  Use W,S,A,D to move, and SPACE to jump.</Text>
@@ -20,4 +20,40 @@
             <Y>0</Y>
         </Location>
     </WorldImage>
+    <Wall>
+        <Type>outline</Type>
+        <Center>
+            <X>12.5</X>
+            <Y>25</Y>
+        </Center>
+        <Width>25.0</Width>
+        <Height>0.5</Height>
+    </Wall>
+    <Wall>
+        <Type>outline</Type>
+        <Center>
+            <X>25</X>
+            <Y>21</Y>
+        </Center>
+        <Width>0.5</Width>
+        <Height>8.5</Height>
+    </Wall>
+    <Wall>
+        <Type>outline</Type>
+        <Center>
+            <X>0</X>
+            <Y>20</Y>
+        </Center>
+        <Width>0.5</Width>
+        <Height>40</Height>
+    </Wall>
+    <Wall>
+        <Type>outline</Type>
+        <Center>
+            <X>15</X>
+            <Y>12</Y>
+        </Center>
+        <Width>20</Width>
+        <Height>0.5</Height>
+    </Wall>
 </Level>

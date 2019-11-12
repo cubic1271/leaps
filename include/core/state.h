@@ -83,18 +83,30 @@ namespace twilight {
         void set(b2Vec2 res, b2Vec2 phys);
 
         b2Vec2 screenToWorld(b2Vec2 screen) {
-            return b2Vec2(screen.x * invScale.x, screen.y * invScale.y);
+            return b2Vec2(screen.x * invScale.x + offset.x, screen.y * invScale.y + offset.y);
         }
 
         b2Vec2 worldToScreen(b2Vec2 world) {
-            return b2Vec2(world.x * scale.x, world.y * scale.y);
+            return b2Vec2((world.x - offset.x) * scale.x, (world.y - offset.y) * scale.y);
         }
+
+        double toScreenWidth(double x) {
+            return x * scale.x;
+        }
+
+        double toScreenHeight(double y) {
+            return y * scale.y;
+        }
+
+        void updateCamera(b2Vec2 center);
 
     private:
         b2Vec2 resolution;
         b2Vec2 phySize;
         b2Vec2 scale;
         b2Vec2 invScale;
+
+        b2Vec2 offset;
     };
 }
 
