@@ -4,6 +4,7 @@
 #include "simple2d/simple2d.h"
 #include "Box2D/Box2D.h"
 #include "pugixml/pugixml.hpp"
+#include "core/contact.h"
 #include <vector>
 
 namespace twilight {
@@ -23,7 +24,7 @@ namespace twilight {
         bool         screenCoord;
     };
 
-    struct Wall {
+    struct Wall : public ContactObject {
         enum WallType {
             WALL_OUTLINE = 0,
             WALL_UNKNOWN
@@ -35,6 +36,11 @@ namespace twilight {
 
         WallType     getTypeValue(std::string type);
         void         constructWall(b2World* world);
+
+        bool         isPlayer()      {return false;}
+        bool         isWall()        {return true;}
+        bool         isActor()       {return false;}
+        bool         isProjectile()  {return false;}
     };
 
     class Level {
@@ -43,6 +49,7 @@ namespace twilight {
         typedef std::vector<WorldImage>  ImageContainer;
         typedef std::vector<Wall>        WallContainer;
         void init(pugi::xml_document* level, b2World* world);
+        void update(double dt);
         void render();
 
     protected:

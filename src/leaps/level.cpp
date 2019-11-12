@@ -87,6 +87,10 @@ twilight::Level* twilight::LevelManager::load(std::string level, b2World* world)
     return target;
 }
 
+void twilight::Level::update(double dt) {
+    
+}
+
 void twilight::Level::render() {
     WorldProjection* proj = WorldProjection::instance();
     for(auto entry : worldLabel) {

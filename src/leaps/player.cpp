@@ -24,22 +24,27 @@ void twilight::Player::render() {
     }
 }
 
+void twilight::Player::update(double dt) {
+
+}
+
 void twilight::Player::inputKey(S2D_Event* event) {
     std::string key = event->key;
     b2Vec2 velocity = body->GetLinearVelocity();
     if(key == "A") {
-        if(velocity.x > -2.0) {
+        if(velocity.x > -4.0) {
             body->ApplyLinearImpulse(b2Vec2(-1.0, 0.0), body->GetWorldCenter(), true);
         }
     }
     else if(key == "D") {
-        if(velocity.x < 2.0) {
+        if(velocity.x < 4.0) {
             body->ApplyLinearImpulse(b2Vec2(1.0, 0.0), body->GetWorldCenter(), true);
         }
     }
     else if(key == "Space") { 
-        if(abs(velocity.y < 0.3)) {
-            body->ApplyLinearImpulse(b2Vec2(0.0, -2.0), body->GetWorldCenter(), true);
+        b2ContactEdge* contacts = body->GetContactList();
+        if(contacts && abs(velocity.y) < 5) {
+            body->ApplyLinearImpulse(b2Vec2(0.0, -3.0), body->GetWorldCenter(), true);
         }
     }
     else {
@@ -68,4 +73,8 @@ void twilight::Player::setPhysics() {
     fixture.restitution = 0.1f;
     body->CreateFixture(&fixture);
     body->SetBullet(true);
+}
+
+void twilight::Player::applyImpact(double impact) {
+    
 }

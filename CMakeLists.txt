@@ -6,6 +6,9 @@ set(CMAKE_CXX_STANDARD 11)
 set(APP_SOURCE_FILES
         src/leaps/state/title.cpp
         src/leaps/state/init.cpp
+        src/leaps/level.cpp
+        src/leaps/actor.cpp
+        src/leaps/player.cpp
 )
 
 set(CORE_SOURCE_FILES

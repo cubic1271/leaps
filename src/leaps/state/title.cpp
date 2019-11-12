@@ -57,6 +57,8 @@ int LeapsTitle::init() {
 void LeapsTitle::update(double dt) { 
     WorldProjection* proj = WorldProjection::instance();
     proj->updateCamera(player->getWorldLocation());
+    player->update(dt);
+    level->update(dt);
 }
 
 void LeapsTitle::render() {
@@ -76,7 +78,22 @@ void LeapsTitle::inputController(S2D_Event* event) {
     player->inputController(event);
 }
 
+void LeapsTitle::PreSolve(b2Contact* contact) {
+
+}
+
+void LeapsTitle::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {
+    double aggregate = 0.0;
+    for(int i = 0; i < impulse->count; ++i) {
+        aggregate += impulse->normalImpulses[i];
+    }
+    if(aggregate > 1) {
+        printf("[impact] %0.2f\n", aggregate);
+    }
+}
+
 void LeapsTitle::BeginContact(b2Contact* contact) {
+
 }
 
 void LeapsTitle::EndContact(b2Contact* contact) {
