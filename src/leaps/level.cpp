@@ -54,14 +54,14 @@ void twilight::Level::init(pugi::xml_document* level, b2World* world) {
     }
 
     for(auto wall : base.children("Wall")) {
-        Wall curr;
-        curr.type = curr.getTypeValue(wall.child("Type").text().as_string());
-        curr.center.x = wall.child("Center").child("X").text().as_double();
-        curr.center.y = wall.child("Center").child("Y").text().as_double();
-        curr.dimension.x = wall.child("Width").text().as_double();
-        curr.dimension.y = wall.child("Height").text().as_double();
+        Wall* curr = new Wall;
+        curr->type = curr->getTypeValue(wall.child("Type").text().as_string());
+        curr->center.x = wall.child("Center").child("X").text().as_double();
+        curr->center.y = wall.child("Center").child("Y").text().as_double();
+        curr->dimension.x = wall.child("Width").text().as_double();
+        curr->dimension.y = wall.child("Height").text().as_double();
         this->wall.push_back(curr);
-        curr.constructWall(this->world);
+        curr->constructWall(this->world);
     }
 
     printf("[level] loaded `%s`\n", title.c_str());
@@ -102,8 +102,8 @@ void twilight::Level::render() {
     }
 
     for(auto entry : wall) {
-        b2Vec2 topLeft = proj->worldToScreen(b2Vec2(entry.center.x - entry.dimension.x / 2.0, entry.center.y - entry.dimension.y / 2.0));
-        b2Vec2 bottomRight = proj->worldToScreen(b2Vec2(entry.center.x + entry.dimension.x / 2.0, entry.center.y + entry.dimension.y / 2.0));
+        b2Vec2 topLeft = proj->worldToScreen(b2Vec2(entry->center.x - entry->dimension.x / 2.0, entry->center.y - entry->dimension.y / 2.0));
+        b2Vec2 bottomRight = proj->worldToScreen(b2Vec2(entry->center.x + entry->dimension.x / 2.0, entry->center.y + entry->dimension.y / 2.0));
         S2D_DrawQuad(
             topLeft.x, topLeft.y, 0.8, 0.0, 0.0, 1.0,
             bottomRight.x, topLeft.y, 1.0, 0.0, 0.0, 1.0,

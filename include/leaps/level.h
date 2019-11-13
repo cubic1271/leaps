@@ -47,7 +47,7 @@ namespace twilight {
     public:
         typedef std::vector<WorldLabel>  LabelContainer;
         typedef std::vector<WorldImage>  ImageContainer;
-        typedef std::vector<Wall>        WallContainer;
+        typedef std::vector<Wall*>       WallContainer;
         void init(pugi::xml_document* level, b2World* world);
         void update(double dt);
         void render();

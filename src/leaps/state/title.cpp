@@ -3,6 +3,8 @@
 #include "leaps/state.h"
 #include "leaps/player.h"
 
+#define LEAPS_TITLE_DEBUG_FONT "robotomono.ttf"
+
 namespace twilight {
 
 void LeapsTitle::enter() {
@@ -25,6 +27,10 @@ int LeapsTitle::init() {
         printf("[state] unable to load bgm: %s\n", LEAPS_TITLE_BGM);
         return twilight::TWILIGHT_ERROR;
     }
+    debugText = resource->getText(LEAPS_TITLE_DEBUG_FONT, 14);
+    S2D_SetText(debugText, "(0, 0)");
+    debugText->x = 0;
+    debugText->y = 0;
     initPhysics();
     level = nullptr;
     level = levels->load("title.xml", phyWorld);
@@ -35,28 +41,18 @@ int LeapsTitle::init() {
     player = new Player();
     player->setWorld(phyWorld);
     player->setPhysics();
-
-/*
-    b2BodyDef bottomWall;
-    bottomWall.position = b2Vec2(0, 25);
-    bottomWall.type = b2_staticBody;
-    bottomWall.userData = this;
-    b2Body* tBody = phyWorld->CreateBody(&bottomWall);
-    b2FixtureDef tFix;
-    b2PolygonShape* rect = new b2PolygonShape;
-    rect->SetAsBox(50.0, 1.0);
-    tFix.shape = rect;
-    tFix.friction = 0.6f;
-    tFix.restitution = 0.2f;
-    tBody->CreateFixture(&tFix);
-*/
-
+    console = Console::instance();
+    
     return twilight::TWILIGHT_OK;
 }
 
 void LeapsTitle::update(double dt) { 
     WorldProjection* proj = WorldProjection::instance();
     proj->updateCamera(player->getWorldLocation());
+
+    mouseWorld = proj->screenToWorld(mouseScreen);
+    S2D_SetText(debugText, "(%0.2f, %0.2f)", mouseWorld.x, mouseWorld.y);
+
     player->update(dt);
     level->update(dt);
 }
@@ -64,6 +60,8 @@ void LeapsTitle::update(double dt) {
 void LeapsTitle::render() {
     player->render();
     level->render();
+    console->render();
+    S2D_DrawText(debugText);
 }
 
 void LeapsTitle::inputKey(S2D_Event* event) {
@@ -71,7 +69,15 @@ void LeapsTitle::inputKey(S2D_Event* event) {
 }
 
 void LeapsTitle::inputMouse(S2D_Event* event) {
+    if(event->type == S2D_MOUSE_MOVE) {
+        mouseScreen.x = event->x;
+        mouseScreen.y = event->y;
 
+        WorldProjection* proj = WorldProjection::instance();
+        mouseWorld = proj->screenToWorld(mouseScreen);
+        S2D_SetText(debugText, "(%0.2f, %0.2f)", mouseWorld.x, mouseWorld.y);
+    }
+    console->inputMouse(event);
 }
 
 void LeapsTitle::inputController(S2D_Event* event) {
@@ -87,8 +93,14 @@ void LeapsTitle::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) 
     for(int i = 0; i < impulse->count; ++i) {
         aggregate += impulse->normalImpulses[i];
     }
-    if(aggregate > 1) {
-        printf("[impact] %0.2f\n", aggregate);
+    ContactObject* objA = (ContactObject*)contact->GetFixtureA()->GetBody()->GetUserData();
+    ContactObject* objB = (ContactObject*)contact->GetFixtureB()->GetBody()->GetUserData();
+
+    objA->applyImpact(aggregate);
+    objB->applyImpact(aggregate);
+    if(aggregate > 10) {
+        Console* console = Console::instance();
+        console->write("Impact detected.");
     }
 }
 

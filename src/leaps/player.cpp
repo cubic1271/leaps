@@ -17,10 +17,12 @@ void twilight::Player::render() {
         b2Vec2 screenPos = proj->worldToScreen(body->GetPosition());
         double absRadius = proj->toScreenHeight(body->GetPosition().y + avatarSize) - proj->toScreenHeight(body->GetPosition().y); 
         S2D_DrawCircle(screenPos.x, screenPos.y, absRadius, 32, 0.5, 0.5, 1.0, 1.0);
+        /*
         S2D_SetText(debugText, "Player: world = (%0.2f, %0.2f), screen = (%0.2f, %0.2f)", 
                                 body->GetPosition().x, body->GetPosition().y, 
                                 screenPos.x, screenPos.y);
         S2D_DrawText(debugText);
+        */
     }
 }
 
@@ -44,7 +46,7 @@ void twilight::Player::inputKey(S2D_Event* event) {
     else if(key == "Space") { 
         b2ContactEdge* contacts = body->GetContactList();
         if(contacts && abs(velocity.y) < 5) {
-            body->ApplyLinearImpulse(b2Vec2(0.0, -3.0), body->GetWorldCenter(), true);
+            body->ApplyLinearImpulse(b2Vec2(0.0, -4.0), body->GetWorldCenter(), true);
         }
     }
     else {

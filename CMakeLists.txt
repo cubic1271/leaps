@@ -12,9 +12,14 @@ set(APP_SOURCE_FILES
 )
 
 set(CORE_SOURCE_FILES
+        src/core/state.cpp 
+        src/core/util.cpp 
+        src/core/console.cpp
         src/core/leaps.cpp
         src/core/animation.cpp
         src/core/resource.cpp
+        src/core/config.cpp 
+        src/core/vasprintf.cpp
 
         src/simple2d/controllers.cpp
         src/simple2d/gl2.cpp
@@ -30,20 +35,16 @@ set(CORE_SOURCE_FILES
         src/simple2d/simple2d.cpp
         src/simple2d/sprite.cpp
         src/simple2d/window.cpp
-        include/core/util.h 
-        src/core/state.cpp 
-        src/core/util.cpp 
         src/pugixml/pugixml.cpp 
-        src/core/config.cpp 
-        src/core/vasprintf.cpp
         
-        include/core/twilight.h
-        include/core/state.h
         include/core/animation.h
         include/core/resource.h
+        include/core/state.h
         include/core/tinydir.h
-        include/simple2d/simple2d.h
+        include/core/twilight.h
+        include/core/util.h 
         include/core/vasprintf.h 
+        include/simple2d/simple2d.h
         include/pugixml/pugiconfig.hpp
         )
 

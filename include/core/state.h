@@ -98,6 +98,10 @@ namespace twilight {
             return y * scale.y;
         }
 
+        b2Vec2 getResolution() {
+            return resolution;
+        }
+
         void updateCamera(b2Vec2 center);
 
     private:

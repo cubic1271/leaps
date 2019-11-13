@@ -18,3 +18,8 @@ There are a lot of engines out there that would likely be a better choice than t
 largely because I like to keep things relatively simple, and because the model and the framework make sense
 to me (read: I wrote them, so they should).
 
+### Licensing ###
+
+The engine and game source code is distributed under the MIT license as described in license/Twilight.LICENSE.md
+
+Art, writing, music, and other elements produced as part of the development of this project are released per https://creativecommons.org/licenses/by-nc/4.0/

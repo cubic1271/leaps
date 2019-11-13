@@ -1,8 +1,9 @@
 #ifndef _LEAPS_STATE_H
 #define _LEAPS_STATE_H
 
-#include "leaps/level.h"
 #include "core/state.h"
+#include "core/console.h"
+#include "leaps/level.h"
 #include "leaps/actor.h"
 
 namespace twilight {
@@ -37,7 +38,11 @@ class LeapsTitle : public StateEntry {
 
         Level*     level;
         S2D_Music* bgm;
+        S2D_Text*  debugText;
         Actor*     player;
+        Console*   console;
+        b2Vec2     mouseScreen;
+        b2Vec2     mouseWorld;
 };
 
 }

@@ -10,6 +10,7 @@
 #include "core/util.h"
 #include "core/particle.h"
 #include "core/config.h"
+#include "core/console.h"
 #include "leaps/state.h"
 
 #define TWILIGHT_APP_VERSION        "v0.01"
@@ -88,12 +89,16 @@ int main(int argc, char* argv[]) {
     WorldProjection* projection = WorldProjection::instance();
     projection->set(b2Vec2(width, height), b2Vec2(physWidth, physHeight));
 
+    Console* console = Console::instance();
+    console->init();
+    console->write("LEAPS! starting up ...");
     snprintf(tbuf, TWILIGHT_TITLE_BUFSZ, "LEAPS / %s / %s", TWILIGHT_APP_VERSION, __DATE__);
     S2D_Window* window = S2D_CreateWindow(tbuf, width, height, _update, _render, flags);
     window->on_key = _onkey;
     window->on_mouse = _onmouse;
     window->on_controller = _oncontroller;
 
+    console->write("Starting initial transition.");
     StateEntry* start = state->getState(LEAPS_TITLE_NAME);
     assert(nullptr != start);
     state->startTransition(start);
