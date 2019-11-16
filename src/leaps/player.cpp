@@ -1,13 +1,9 @@
 #include "leaps/player.h"
 #include "core/resource.h"
+#include "core/animation.h"
 
 twilight::Player::Player() {
     ResourceManager* resource = ResourceManager::instance();
-    debugText = resource->getText("aclonica.ttf", 12);
-    assert(debugText);
-    debugText->color.r = 1.0;
-    debugText->color.g = 1.0;
-    debugText->color.b = 1.0;
     avatarSize = 0.4;
 }
 
@@ -16,13 +12,7 @@ void twilight::Player::render() {
         WorldProjection* proj = WorldProjection::instance();
         b2Vec2 screenPos = proj->worldToScreen(body->GetPosition());
         double absRadius = proj->toScreenHeight(body->GetPosition().y + avatarSize) - proj->toScreenHeight(body->GetPosition().y); 
-        S2D_DrawCircle(screenPos.x, screenPos.y, absRadius, 32, 0.5, 0.5, 1.0, 1.0);
-        /*
-        S2D_SetText(debugText, "Player: world = (%0.2f, %0.2f), screen = (%0.2f, %0.2f)", 
-                                body->GetPosition().x, body->GetPosition().y, 
-                                screenPos.x, screenPos.y);
-        S2D_DrawText(debugText);
-        */
+        S2D_DrawCircle(screenPos.x, screenPos.y, absRadius, 32, 1.0, 1.0, 1.0, 1.0);
     }
 }
 
@@ -78,5 +68,11 @@ void twilight::Player::setPhysics() {
 }
 
 void twilight::Player::applyImpact(double impact) {
-    
+    if(impact > 6.0) {
+        b2Vec2 playLocation = getWorldLocation();
+        playLocation.y -= 3 * avatarSize;
+        AnimatedText impactText = AnimatedText::FadeTextDrift("OUCH!", ColorVec4(1.0, 0.8, 0.8, 1.0), playLocation);
+        AnimationManager* animation = AnimationManager::instance();
+        animation->addText(&impactText);
+    }
 }

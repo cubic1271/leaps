@@ -1,6 +1,7 @@
 #ifndef _LEAPS_STATE_H
 #define _LEAPS_STATE_H
 
+#include "core/animation.h"
 #include "core/state.h"
 #include "core/console.h"
 #include "leaps/level.h"
@@ -33,16 +34,15 @@ class LeapsTitle : public StateEntry {
         // Box2D callbacks.
         void BeginContact(b2Contact* contact);
         void EndContact(b2Contact* contact);
-        void PreSolve(b2Contact* contact);
         void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 
-        Level*     level;
-        S2D_Music* bgm;
-        S2D_Text*  debugText;
-        Actor*     player;
-        Console*   console;
-        b2Vec2     mouseScreen;
-        b2Vec2     mouseWorld;
+        Level*             level;
+        S2D_Music*         bgm;
+        S2D_Text*          debugText;
+        Actor*             player;
+        Console*           console;
+        b2Vec2             mouseScreen;
+        b2Vec2             mouseWorld;
 };
 
 }

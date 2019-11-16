@@ -55,12 +55,18 @@ void LeapsTitle::update(double dt) {
 
     player->update(dt);
     level->update(dt);
+
+    AnimationManager* animation = AnimationManager::instance();
+    animation->update(dt);
 }
 
 void LeapsTitle::render() {
     player->render();
     level->render();
     console->render();
+    
+    AnimationManager* animation = AnimationManager::instance();
+    animation->render();
     S2D_DrawText(debugText);
 }
 
@@ -82,10 +88,6 @@ void LeapsTitle::inputMouse(S2D_Event* event) {
 
 void LeapsTitle::inputController(S2D_Event* event) {
     player->inputController(event);
-}
-
-void LeapsTitle::PreSolve(b2Contact* contact) {
-
 }
 
 void LeapsTitle::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse) {

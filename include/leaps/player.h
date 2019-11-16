@@ -19,8 +19,9 @@ namespace twilight {
         void          applyImpact(double impact);
 
     protected:
-        double energy;
-        double avatarSize;
+        double     energy;
+        double     health;
+        double     avatarSize;
     };
 }
 
